@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <!-- 標題與 favicon 會在載入後依系統設定（/api/settings/public）覆寫 -->
+    <title>報價管理系統</title>
+    <meta name="description" content="報價、合約與人事管理系統。支援版本鎖定、稽核軌跡與 PDF 匯出。" />
+    <link rel="icon" id="app-favicon" type="image/svg+xml" href="/logo-default.svg" />
+    <!-- 字型與圖示走 CDN；離線環境會退回系統字型與無圖示，功能不受影響（見 README） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <meta property="og:title" content="報價管理系統" />
+    <meta property="og:description" content="報價、合約與人事管理系統。" />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

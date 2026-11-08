@@ -1,0 +1,25 @@
+# 依賴與建置輸出
+node_modules/
+dist/
+*.tsbuildinfo
+
+# 環境變數與密鑰（只保留範例檔）
+.env
+.env.*
+!.env.example
+docker-compose.override.yml
+credentials/
+*-service-account*.json
+
+# 使用者上傳的檔案與備份（含客戶簽回的合約、公司印章）
+uploads/
+backups/
+*.dump
+*.tar.gz
+*.tgz
+
+# 系統與編輯器
+.DS_Store
+.vscode/
+.idea/
+*.log

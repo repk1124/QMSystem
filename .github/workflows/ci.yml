@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: qm
+          POSTGRES_PASSWORD: qm_test_pw
+          POSTGRES_DB: qm_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U qm -d qm_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # 出勤工時等時間斷言假設 UTC
+      TZ: UTC
+      DATABASE_URL: postgresql://qm:qm_test_pw@localhost:5432/qm_test
+      SESSION_SECRET: ci-only-session-secret-not-for-production
+      UPLOAD_DIR: ${{ github.workspace }}/.ci-uploads
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run check
+      - name: Build
+        run: npm run build
+      - name: Migrate + unit / API tests（空庫）
+        run: npm test
+      - name: End-to-end API tests（起正式 bundle 打全部路由）
+        run: npm run test:e2e
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: quotationmaster:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

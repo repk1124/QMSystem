@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="QuotationMaster">
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="#c9951a"/>
+  <path d="M20 18h18a8 8 0 0 1 8 8v4a8 8 0 0 1-8 8h-8v10h-6V18zm6 6v8h12a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H26z" fill="#fff"/>
+  <path d="M34 36l12 12-4 4-12-12z" fill="#fff" opacity=".9"/>
+</svg>

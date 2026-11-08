@@ -1,0 +1,41 @@
+# 一鍵部署：PostgreSQL + 應用程式。
+#   cp .env.example .env   （或直接跑 scripts/setup.sh / setup.ps1 自動產生）
+#   docker compose up -d --build
+# 要改對外埠或接外部資料庫，請複製 docker-compose.override.example.yml 為
+# docker-compose.override.yml 再修改，不要直接改這個檔。
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-quotationmaster}
+      POSTGRES_USER: ${POSTGRES_USER:-qm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?請在 .env 設定 POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-qm} -d ${POSTGRES_DB:-quotationmaster}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      # 容器內一律用 compose 網路裡的 db 服務；.env 的 DATABASE_URL 只供非 Docker 使用
+      DATABASE_URL: postgresql://${POSTGRES_USER:-qm}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-quotationmaster}
+      UPLOAD_DIR: /app/uploads
+      PORT: "5000"
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    volumes:
+      - uploads:/app/uploads
+
+volumes:
+  pgdata:
+  uploads:

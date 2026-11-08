@@ -1,0 +1,21 @@
+# 範例：複製成 docker-compose.override.yml 後依需求修改。
+# docker compose 會自動合併 override 檔，不用改 docker-compose.yml。
+services:
+  app:
+    # 1) 改對外埠（也可以只在 .env 設 APP_PORT=8080，不需要這個檔）
+    ports:
+      - "8080:5000"
+
+    # 2) 接外部／既有的 PostgreSQL（雲端託管、公司既有的 DB）：
+    #    覆寫 DATABASE_URL，並把 depends_on 拿掉；下面的 db 服務則整個停用。
+    # environment:
+    #   DATABASE_URL: postgresql://user:password@db.example.com:5432/quotationmaster?sslmode=require
+    # depends_on: !reset []
+
+    # 3) 上傳檔改掛到主機目錄（方便直接備份）
+    # volumes:
+    #   - ./data/uploads:/app/uploads
+
+  # 使用外部資料庫時，把內建 db 停掉：
+  # db:
+  #   profiles: ["disabled"]
