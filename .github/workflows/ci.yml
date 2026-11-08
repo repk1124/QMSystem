@@ -42,7 +42,15 @@ jobs:
         run: npm run build
       - name: Migrate + unit / API tests（空庫）
         run: npm test
+      # e2e 會自己起 dist/index.js、自動 migrate 並用 INITIAL_ADMIN_PASSWORD 建管理員，
+      # 所以要用一個乾淨的資料庫 —— 上一步的 npm test 已經在 qm_test 建了使用者，
+      # 管理員不會再重建，密碼就對不上（CI 第一次跑就是這樣紅的）。
+      - name: Create empty DB for e2e
+        run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c "CREATE DATABASE qm_e2e"
       - name: End-to-end API tests（起正式 bundle 打全部路由）
+        env:
+          DATABASE_URL: postgresql://qm:qm_test_pw@localhost:5432/qm_e2e
+          E2E_ADMIN_PASSWORD: E2eAdminPass123
         run: npm run test:e2e
 
   docker:
